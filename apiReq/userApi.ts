@@ -1,16 +1,15 @@
 import { api } from "./axiosApi";
-import { mobileSchema } from "@/Schemas/FormSchemas";
+import { emailSchema } from "../components/steppers/FormSchemas";
 import { z } from "zod";
-type mobileType = z.infer<typeof mobileSchema>
+type mobileType = z.infer<typeof emailSchema>
 
-export const getOtp = async(mobile:mobileType)=>{
+export const getOtp = async(email:mobileType)=>{
     try {
-        const response = await api.post('/Register/otp',mobile);
+        const response = await api.post('/Register/otp',email);
         // console.log(response)
         return response.data
     } catch (error) {
         console.log("error in otp req:",error)
-
     }
 }
 

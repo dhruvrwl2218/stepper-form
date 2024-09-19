@@ -5,7 +5,7 @@ import { z } from "zod";
 import dbConnect from "@/lib/db/dbConnection";
 
 const baseSchema = PersonalDetailsSchema._def.schema; // Extract the base schema
-const Updatedschema = baseSchema.partial({ ConfirmPassword : true });
+const Updatedschema = baseSchema.partial({ confirmPassword : true });
 export async function POST(request : NextRequest){
     try {
         const cookies = request.cookies;
@@ -17,8 +17,8 @@ export async function POST(request : NextRequest){
         console.log(validate);
 
         dbConnect();
-        const updatedStep2 = await User.findByIdAndUpdate(_id,{PersonalData},{new:true}).exec();
-
+        const updatedStep2 = await User.findByIdAndUpdate(_id,{PersonalData,step : 5},{new:true}).exec();
+        console.log(updatedStep2)
         return NextResponse.json(updatedStep2,{status:200});
 
     } catch (error) {

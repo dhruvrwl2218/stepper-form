@@ -6,6 +6,7 @@ import { UserState } from "@/Schemas/UserSliceData";
 import { AxiosResponse,isAxiosError} from "axios";
 import {z} from 'zod';
 
+
 type registerType = z.infer<typeof otpSchema>
 export const Register = createAsyncThunk<UserState, {registerData : registerType}, { rejectValue: string }>(
   'User/Register',
@@ -31,14 +32,47 @@ export const Register = createAsyncThunk<UserState, {registerData : registerType
         }
   }
 );
+
+
+//vehicleMapping
+export const VehicleMap = createAsyncThunk<UserState, {vehiclesMap : string[]}, { rejectValue: string }>(
+  'User/VehicleMap',
+  async (vehiclesMap, thunkAPI) => {
+      try {
+          console.log('VM:',vehiclesMap)
+          const response: AxiosResponse<UserState> = await api.post('Register/vehicleMap', { vehiclesMap });
+          console.log(response);
+          return response.data; // Return the data property directly
+      } catch (err) {
+          let errorMessage = 'An unknown error occurred';
+          if (isAxiosError(err)) {
+            // Axios-specific error
+            if (err.response && err.response.data) {
+              errorMessage = err.response.data.message || 'An error occurred while fetching OTP';
+            } else {
+              errorMessage = err.message;
+            }
+          } else if (err instanceof Error) {
+            // Native JS error
+            errorMessage = err.message;
+          }
+          return thunkAPI.rejectWithValue(errorMessage);
+        }
+  }
+);
+
+
 //kyc Api call
 type kycType = z.infer<typeof KycSchema>
-export const kyc = createAsyncThunk<UserState, {KycData : FormData}, { rejectValue: string }>(
+export const kyc = createAsyncThunk<UserState, FormData, { rejectValue: string }>(
   'User/kyc',
   async (kycData, thunkAPI) => {
     console.log("inside thunk",kycData)
       try {
-          const response: AxiosResponse<UserState> = await api.post('Register/kyc', { kycData });
+          const response: AxiosResponse<UserState> = await api.post('Register/kyc', kycData, {
+            headers: {
+              'Content-Type': 'multipart/form-data', // Set Content-Type to multipart/form-data
+            },})
           console.log(response);
           return response.data; // Return the data property directly
       } catch (err) {
@@ -62,7 +96,7 @@ export const kyc = createAsyncThunk<UserState, {KycData : FormData}, { rejectVal
 
 //Personal Details request
 const baseSchema = PersonalDetailsSchema._def.schema; // Extract the base schema
-const Updatedschema = baseSchema.partial({ ConfirmPassword : true });
+const Updatedschema = baseSchema.partial({ confirmPassword : true });
 type personalDetailsType = z.infer<typeof Updatedschema>
 
 export const personalDetails = createAsyncThunk<UserState, {PersonalData: personalDetailsType}, { rejectValue: string }>(

@@ -21,12 +21,12 @@
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^2.4.0",
     "clsx": "^2.1.1",
-    "formidable": "^3.5.1",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.424.0",
     "lucide-svelte": "^0.426.0",
     "mongoose": "^8.5.3",
     "next": "14.2.5",
+    "next-file": "^1.0.5",
     "nodemailer": "^6.9.15",
     "react": "^18",
     "react-dom": "^18",
@@ -37,7 +37,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/formidable": "^3.4.5",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.15",
     "@types/react": "^18",

@@ -12,19 +12,23 @@ const UserDetails = new Schema({
     email: {
       type: String,
       required: false,
+      unique : true,
       validate: {
         validator: (v: string) => /.+\@.+\..+/.test(v),
         message: (props: { value: string }) =>
           `${props.value} is not a valid email address!`,
       },
     },
+    password : {
+      type : String
+    },
     mobile2: {
       type: String,
       // required: [true, 'Mobile number is required'],
       match: [/^\d{10}$/, "Mobile number must be 10 digits"],
     },
-    Entity: {
-      enum: ["Corporate", "Entity"],
+    entity: {
+      enum: ["Corporate", "Individual"],
     },
     companyName:  {
       type: String,
@@ -93,6 +97,10 @@ const UserDetails = new Schema({
       type: Number,
       default: null,
     },
+    highestStep :{
+      type : Number,
+      default : null
+    }
   },
   { timestamps: true }
 );

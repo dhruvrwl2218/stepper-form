@@ -21,10 +21,12 @@ import { kyc } from '@/redux/features/User/userAsyncThunk';
 
 const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
   const dispatch : AppDispatch = useDispatch();
+  const {status,error,user} = useSelector((state: RootState) => state.User);
+  
   const form = useForm<z.infer<typeof KycSchema>>({
     resolver: zodResolver(KycSchema),
     defaultValues :{
-      panNo:"",
+      panNumber:"",
       panName:"",
       panCard: undefined, 
       addressProofFront: undefined,
@@ -32,8 +34,8 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
     }
   })
 
-  const onSubmit: SubmitHandler<z.infer<typeof KycSchema>>= (values) =>{
-    console.log(values)
+  const onSubmit: SubmitHandler<z.infer<typeof KycSchema>>= async(values) =>{
+    console.log('values:',values)
     const formData = new FormData();
     Object.entries(values).map(([key,value])=>{
       if(value instanceof File){
@@ -42,17 +44,18 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
         formData.append(key,value.toString());
       }
     })
-    console.log(formData)
-    dispatch(kyc(formData as any))
+    
+    await dispatch(kyc(formData as any))
   }
   return (
     <div className='border-2 rounded-lg'>
       <div className='text-3xl font-bold text-center w-full text-white bg-indigo-400 p-2'>KYC</div>
+      {status === 'loading' ? <h1>Loading</h1>:
       <Form {...form}>
           <form ref={ref} encType="multipart/form-data"  onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 gap-6 '>
             <FormField
             control={form.control}
-            name='panNo'
+            name='panNumber'
             render={({field})=>(
               <FormItem className='w-96'>
                 <FormLabel>Pan No</FormLabel>
@@ -127,6 +130,7 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
           {/* <Button type="submit" variant="indi">Submit</Button> */}
           </form>
       </Form>
+      }
     </div>
   )
 })

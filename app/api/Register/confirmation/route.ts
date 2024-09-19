@@ -26,7 +26,7 @@ try {
         console.log('otp is not valid')
     }
 
-    const userState = await User.findByIdAndUpdate(_id, { otp: null , otpExpiration: null, step:3},{new:true}).exec();    
+    const userState = await User.findByIdAndUpdate(_id, { otp: null , otpExpiration: null, step:2},{new:true}).exec();    
     return NextResponse.json(userState,{status:200});
 } catch (error) {
     console.log(error)

@@ -12,7 +12,7 @@ export const otpSchema = z.object({
 
 
 export const KycSchema = z.object({
-  panNo: z.string()
+  panNumber: z.string()
     .length(10, { message: "PAN number must be exactly 10 characters long" })
     .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "PAN number must follow the pattern AAAAA9999A" }),
   
@@ -54,54 +54,54 @@ export const PersonalDetailsSchema = z.object({
       required_error: 'Entity is required',
     }),
   
-    FirstName: z
+    firstName: z
       .string()
       .min(1, { message: "First Name is required" })
       .max(50, { message: "First Name can't exceed 50 characters" }),
   
-    LastName: z
+    lastName: z
       .string()
       .min(1, { message: "Last Name is required" })
       .max(50, { message: "Last Name can't exceed 50 characters" }),
   
-    Email: z
+    email: z
       .string()
       .email({ message: "Invalid email address" }),
   
-    SecondaryMobileNo: z
+      mobileNo2: z
       .string()
       .regex(/^\d{10}$/, { message: "Invalid mobile number" })
       .optional(),
   
-    Password: z
+    password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters long" })
       .max(20, { message: "Password can't exceed 20 characters" }),
   
-    ConfirmPassword: z
+    confirmPassword: z
       .string()
       .min(8, { message: "Password must be at least 8 characters long" })
       .max(20, { message: "Password can't exceed 20 characters" }),
   
-    Address1: z
+    address1: z
       .string()
       .min(1, { message: "Address 1 is required" })
       .max(100, { message: "Address 1 can't exceed 100 characters" }),
   
-    Address2: z
+    address2: z
       .string()
       .max(100, { message: "Address 2 can't exceed 100 characters" })
       .optional(),
   
-    Pincode: z
+   pincode: z
       .string()
       .regex(/^\d{6}$/, { message: "Invalid pincode" }),
   
-    State: z.string().min(1, { message: "State is required" }),
+    state: z.string().min(1, { message: "State is required" }),
   
-    City: z.string().min(1, { message: "City is required" }),
+    city: z.string().min(1, { message: "City is required" }),
   }).superRefine((data, ctx) => {
-    if (data.Password !== data.ConfirmPassword) {
+    if (data.password !== data.confirmPassword) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['ConfirmPassword'],
@@ -112,18 +112,18 @@ export const PersonalDetailsSchema = z.object({
 
   
  export const BankDetailsSchema = z.object({
-    AccountHolderName: z
+    bankAccountHolderName: z
       .string()
       .min(1, { message: "Account Holder Name is required" })
       .max(100, { message: "Account Holder Name can't exceed 100 characters" }),
   
-    BankIFSC: z
+    bankAccountHolderIfsc: z
       .string()
       .min(11, { message: "Bank IFSC must be 11 characters long" })
       .max(11, { message: "Bank IFSC must be 11 characters long" })
       .regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, { message: "Invalid Bank IFSC format" }),
   
-    BankAccountNumber: z
+    bankAccountHolderNumber: z
       .string()
       .min(9, { message: "Bank Account Number must be at least 9 digits long" })
       .max(18, { message: "Bank Account Number can't exceed 18 digits" })
@@ -135,7 +135,7 @@ export const PersonalDetailsSchema = z.object({
       .max(18, { message: "Bank Account Number can't exceed 18 digits" })
       .regex(/^\d+$/, { message: "Bank Account Number must contain only digits" })
   })
-  .refine((data) => data.BankAccountNumber === data.ConfirmBankAccNo, {
+  .refine((data) => data.bankAccountHolderNumber === data.ConfirmBankAccNo, {
     message: "Bank Account no doesn't match",
     path: ["confirm"],
   });

@@ -82,7 +82,7 @@ const Otp = () => {
             {otpSent && <Button variant={"ghost"} className='text-xs' size={"sm"}>change?</Button>}
             </div>
           <FormControl>
-            <Input placeholder='Enter mobile no' {...field}/>
+            <Input placeholder='xyz@gmail.com' {...field}/>
           </FormControl>
           <FormMessage/>
           </FormItem>
@@ -115,8 +115,7 @@ const Otp = () => {
          <Button type = "submit" variant={"indi"}>{otpSent ? "send otp" : "register"}</Button>
       </form>
     </Form>
-    </div>  
-    
+    </div>   
   )
 }
 

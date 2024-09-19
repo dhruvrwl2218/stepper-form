@@ -16,7 +16,7 @@ const page = () => {
   const userstep = (useSelector((state: RootState) => state.User.user?.step) ?? 1) as number
   const formSubmitRef = useRef<HTMLFormElement>(null);
   const dispatch: AppDispatch = useDispatch();
-  console.log(userstep)
+  
   const renderStage = (): JSX.Element | null => {
     switch (userstep) {
       case 1: 
@@ -34,7 +34,6 @@ const page = () => {
     }
   };
   const handleNext = () =>{
-    console.log(formSubmitRef.current); 
      if(formSubmitRef.current){
       formSubmitRef.current.requestSubmit();
      }
@@ -51,7 +50,7 @@ const page = () => {
       </div>
       <div className='mt-8 flex justify-between'>
         <div>{userstep > 1 ? <Button variant={"indi"} size={"lg"} onClick={handlePrevious}>Previous</Button>:null}</div>
-        <div>{userstep > 1 ?<Button variant={"indi"} size={"lg"} onClick={handleNext}>{userstep < 5 ?`Save & Proceed`:`Save & Submit`}</Button>:null}</div> 
+        <div>{userstep > 1 ? <Button variant={"indi"} size={"lg"} onClick={handleNext}>{userstep < 5 ?`Save & Proceed`:`Save & Submit`}</Button>:null}</div> 
       </div>
     </div>
   )

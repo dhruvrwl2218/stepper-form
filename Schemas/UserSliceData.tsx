@@ -1,11 +1,4 @@
-interface VehicleMapping{
-    id : string,
-    vehicleId : string,
-    Vehicle :{
-        id:string,
-        name:string
-    };
-}
+
  export interface UserState {
     _id: string;
     fullName: string | null;
@@ -25,11 +18,22 @@ interface VehicleMapping{
     cityId: string | null;
     stateId: string | null;
     status: string | null;
-    step: Number;
+    step: Number | null;
+    entity : string | null;
     createdAt: string | null;
     updatedAt: string | null;
-    BuyerVehicleCategoryMapping: VehicleMapping[];
+    vechileMap: string[];
 }
+
+// interface VehicleMapping{
+//     // id : string,
+//     // vehicleId : string,
+//     // Vehicle :{
+//     //     id:string,
+//     //     name:string
+//     // };
+    
+// }
 //  export interface UserState{
 //     user : User | null,
 //     loading :boolean,

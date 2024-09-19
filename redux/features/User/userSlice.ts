@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {  personalDetails,Register,kyc,bankDetails } from './userAsyncThunk';
+import {  personalDetails,Register,kyc,bankDetails, VehicleMap } from './userAsyncThunk';
 import { UserState } from '../../../Schemas/UserSliceData';
 import { number, z } from 'zod';
 
@@ -42,6 +42,21 @@ const UserSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload || 'Failed to fetch OTP';
       })
+
+      //vehicleMap 
+      .addCase(VehicleMap.pending,(state:User)=>{
+        state.status='loading';
+      })
+      .addCase(VehicleMap.fulfilled,(state: User, action: PayloadAction<UserState>) => {
+        console.log("in slice after res:",action.payload)
+        state.status = 'succeeded';
+        state.user = action.payload;
+      })
+      .addCase(VehicleMap.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload || 'Failed to fetch OTP';
+      })
+      
       //kyc
       .addCase(kyc.pending,(state:User)=>{
         state.status='loading';

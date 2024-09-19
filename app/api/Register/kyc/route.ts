@@ -1,105 +1,98 @@
 // app/api/upload/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
-import formidable, { File, Fields, Files } from 'formidable';
-import fs from 'fs';
-import path from 'path';
 import { v2 as cloudinary } from 'cloudinary';
-import { IncomingMessage } from 'http';
 import User from '@/models/UserDetials';
+import { Upload } from 'lucide-react';
+import { resolve } from 'path';
+import { rejects } from 'assert';
 
-// Configure Cloudinary
+// Configuration
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View Credentials' below to copy your API secret
 });
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-// Function to parse form data
-const parseForm = (req: NextRequest): Promise<{ fields: Fields; files: Files }> => {
-  return new Promise((resolve, reject) => {
-    const form = formidable({
-      keepExtensions: true,
-      uploadDir: path.join(process.cwd(), '/public/uploads'), // Directory to save the files
-      multiples: true,
-    });
-
-    form.parse(req as unknown as IncomingMessage, (err, fields, files) => {
-      if (err) {
-        console.error('Form parsing error:', err);
-        reject(new Error('Failed to parse form data'));
-      } else {
-        resolve({ fields, files });
-      }
-    });
-  });
-};
-
-// // Function to upload file to Cloudinary
-const uploadToCloudinary = async (filePath: string): Promise<string> => {
+interface CloudinaryUploadResult {
+  public_id: string;
+  [key: string]: any
+}
+type FileUploadType = { [key: string]: File };
+export async function POST(request : NextRequest) {
   try {
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder: 'uploads',
-    });
-    return result.secure_url;
-  } catch (error) {
-    console.error('Cloudinary upload error:', error);
-    throw new Error('Failed to upload image to Cloudinary');
-  }
-};
+    const formData = await request.formData();
+    const cookies = request.cookies;
+    const _id = cookies.get('UserId')?.value;
+    console.log(formData)
+    const panName = formData.get('panName') as string;
+    const panNumber = formData.get('panNumber') as string;
+    const panCard = formData.get('panCard') as File | null;
+    const addressProofFront = formData.get('addressProofFront') as File | null;
+    const addressProofBack = formData.get('addressProofBack') as File | null;
 
-export async function POST(request: NextRequest) {
-  try {
-    // const userId = request.cookies.get('userId')?.value;
-    // if(!userId){
-    //   console.log("id doesn't recieved in the cookies")
-    //   throw Error("Plz go to step one and register with no.")
-    // }
-    // Parse form data
-    console.log(request)
-    const { files } = await parseForm(request);
-    console.log(files)
-    // Ensure files are present
-    const addressProofFront = files.addressProofFront as File | File[] | undefined;
-    const addressProofBack = files.addressProofBack as File | File[] | undefined;
+    const FileUpload: FileUploadType[] = [];
+    if(panCard){
+      FileUpload.push({panCard:panCard})
+    }
+    if(addressProofFront){
+      FileUpload.push({addressProofFront:addressProofFront })
+    }
+    if(addressProofBack){
+      FileUpload.push({addressProofBack:addressProofBack })
+    }
+
+    const public_id = await filesPublicId(FileUpload)
+    console.log('final ids:',public_id)
     
-    console.log("adf:",addressProofFront,"adb:",addressProofBack)
-//     //here before uploading the files do check the is there are files already and what if this step
-//     // was filled again than in that case get the url stored and dlt tht file
-   
-//     // Object to hold uploaded file URLs
-//     const uploads: { image1Url?: string; image2Url?: string } = {};
-
-//     // Handle file upload to Cloudinary
-//     if (addressProofFront) {
-//       const file = Array.isArray(addressProofFront) ? addressProofFront[0] : addressProofFront;
-//       if (file instanceof File) {
-//         const imageUrl = await uploadToCloudinary(file.filepath);
-//         uploads.image1Url = imageUrl;
-//       }
-//     }
-
-//     if (addressProofBack) {
-//       const file = Array.isArray(addressProofBack) ? addressProofBack[0] : addressProofBack;
-//       if (file instanceof File) {
-//         const imageUrl = await uploadToCloudinary(file.filepath);
-//         uploads.image2Url = imageUrl;
-//       }
-//     }
-//    const kycDetails = await User.findByIdAndUpdate(userId,
-//     {$set:{}}
-//    )
-    // Return success response with uploaded URLs
-    return NextResponse.json({ message: 'Files uploaded successfully'});
-
+    const userState = await User.findByIdAndUpdate({_id},{...public_id,step:4,panNumber,panName},{new:true}).exec();;
+    console.log(userState)
+    return NextResponse.json(userState,{status : 200})
   } catch (error) {
-    console.error('Error processing request:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.log(error)
+
+    return NextResponse.json({status:500})
   }
 }
+
+//send the files and get the files uploaded in the cloud
+const CloudUpload = async(file:File)=>{
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+ 
+  const result = await new Promise<CloudinaryUploadResult>(
+    (resolve,reject)=>{
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {folder : "kyc-stepper"},
+        (error,result)=>{
+          if(error) reject(error);
+          else resolve(result as CloudinaryUploadResult)
+        }
+      )
+      uploadStream.end(buffer)
+    }
+  )
+  console.log(result.public_id)
+  return result.public_id;
+}
+
+const filesPublicId = async(files : FileUploadType[])=>{
+  const uploadDetailsArray = await Promise.all(
+    files.map(async(file)=> {
+      const key = Object.keys(file)[0]
+      console.log(key)
+      const value = file[key] 
+      // console.log('in map',value)
+      const public_id = await CloudUpload(value);
+      // console.log(public_id);
+      return {[key] : public_id}
+    })
+  )
+  // Convert the array of objects into a single object
+const uploadDetails = uploadDetailsArray.reduce((acc, curr) => {
+  const key = Object.keys(curr)[0];
+  acc[key] = curr[key];
+  return acc;
+}, {});
+  return uploadDetails
+}
+

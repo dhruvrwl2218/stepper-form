@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
         const {BankData} = await request.json();
         const cookies = request.cookies;
         const _id = cookies.get('UserId')?.value;
-        console.log("aagya ji sb aa dekhlo",BankData,_id);
+        // console.log("aagya ji sb aa dekhlo",BankData,_id);
 
         const validate = Updatedschema.parse(BankData);
 
@@ -33,3 +33,5 @@ export async function POST(request: NextRequest) {
         }
     }
 }
+
+
