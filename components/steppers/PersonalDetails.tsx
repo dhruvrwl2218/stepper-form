@@ -47,7 +47,16 @@ const PersonalDetails = forwardRef<HTMLFormElement>((props,ref) => {
   const form = useForm<z.infer<typeof PersonalDetailsSchema>>({
     resolver : zodResolver(PersonalDetailsSchema),
     defaultValues:{
-      
+      entity : user?.entity || undefined,
+      firstName : user?.firstName || '',
+      lastName : user?.lastName || '',
+      email : user?.email || '',
+      mobileNo2 : user?.mobile2 || '',
+      address1 : user?.address1 || '',
+      address2 : user?.address2 || '',
+      pincode : user?.pinCode || '',
+      state : user?.state || '',
+      city : user?.city || '',
     }
   })
   const onSubmit: SubmitHandler<z.infer<typeof PersonalDetailsSchema>>= async(values) =>{
@@ -60,7 +69,7 @@ const PersonalDetails = forwardRef<HTMLFormElement>((props,ref) => {
 
   return (
     <div className='border-2 rounded-lg'>
-      <div className='text-3xl font-bold text-center w-full text-white bg-indigo-400 p-2'>Personal Details</div>
+      <div className='text-3xl font-bold text-center w-full text-white bg-slate-800 p-2'>Personal Details</div>
       {status === 'loading' ? <h1>loading</h1> :
       <Form {...form}>
           <form  action="" ref = {ref} onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 '>

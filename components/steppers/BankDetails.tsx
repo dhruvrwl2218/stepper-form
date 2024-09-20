@@ -25,12 +25,15 @@ import { bankDetails } from "@/redux/features/User/userAsyncThunk";
 const BankDetails = forwardRef<HTMLFormElement>((props,ref) => {
   const dispatch : AppDispatch = useDispatch();
   const router = useRouter()
-  const {status,error} = useSelector((state: RootState) => state.User);
+  const {status,error,user} = useSelector((state: RootState) => state.User);
 
   const form = useForm<z.infer<typeof BankDetailsSchema>>({
     resolver : zodResolver(BankDetailsSchema),
     defaultValues:{
-      
+      bankAccountHolderIfsc : user?.bankAccountHolderIfsc || '',
+      bankAccountHolderName : user?.bankAccountHolderName || '',
+      bankAccountHolderNumber : user?.bankAccountHolderNumber || '',
+      ConfirmBankAccNo : ''
     }
   })
 
@@ -45,7 +48,7 @@ const BankDetails = forwardRef<HTMLFormElement>((props,ref) => {
   return (
     <div className='border-2 rounded-lg'>
       {status === 'loading' && <h1>Loading</h1>}
-      <div className='text-3xl font-bold text-center w-full text-white bg-indigo-400 p-2'>Bank Details</div>
+      <div className='text-3xl font-bold text-center w-full text-white bg-slate-800 p-2'>Bank Details</div>
       <Form {...form}>
           <form action="" ref={ref} onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 gap-6 '>
             <FormField

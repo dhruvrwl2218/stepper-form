@@ -37,7 +37,6 @@ const isOtpForm = (data: any): data is z.infer<typeof otpSchema> => {
 const Otp = () => {
   const[otpSent,setOtpSent] = useState(false);
   const dispatch : AppDispatch = useDispatch();
-  // const user = useSelector((state: RootState) => state.User.user);
   const form = useForm<emailType | OtpForm>({
     resolver: zodResolver(otpSent? otpSchema: emailSchema),
     defaultValues: {  
@@ -46,40 +45,36 @@ const Otp = () => {
     }, 
   })
 
-  const changeNum = () =>{
-    setOtpSent(false)
+  const changeEmail = () =>{
+    setOtpSent(false);
+    form.setValue("email",'')
   }
   
+  const resendOtp = async() =>{
+   const email = form.getValues("email");
+   const res = await getOtp(email as any) 
+  }
   const onSubmit : SubmitHandler<emailType| OtpForm> = async(values)=>{
-      console.log(values)
-
       if(otpSent && isOtpForm(values) ){
-        console.log("otp and mobileno")
-        console.log(values)
-        dispatch(Register(values as any))
-        
+        dispatch(Register(values as any)) 
       }else{
-        console.log("only mobile no.")
-        console.log(values)
         const res =  await getOtp(values as any)
-        console.log(res)
         res.status === 200 && setOtpSent(true);
-
       }
   }
 
   return (
-    <div className='w-1/2 p-8'>
+    <div className='w-3/4'>
     <Form {...form}>
-      <form action="" onSubmit={form.handleSubmit(onSubmit)} className='p-4 flex flex-wrap gap-8'>
+      <form action="" onSubmit={form.handleSubmit(onSubmit)} className='p-4 flex flex-wrap gap-8 text-slate-800'>
         <FormField
         control={form.control}
         name = "email"
         render={({field})=>(
-          <FormItem className='w-1/2'>
+          <FormItem className='w-48'>
             <div className="flex items-center justify-between m-0">
             <FormLabel>Email</FormLabel>
-            {otpSent && <Button variant={"ghost"} className='text-xs' size={"sm"}>change?</Button>}
+            {otpSent && <Button variant={"ghost"} className='text-xs' size={"sm"} onClick={changeEmail}>change?</Button>}
             </div>
           <FormControl>
             <Input placeholder='xyz@gmail.com' {...field}/>
@@ -92,10 +87,10 @@ const Otp = () => {
          control={form.control}
          name = "otp"
          render={({field})=>(
-          <FormItem className='w-1/2'>
+          <FormItem className='w-64'>
             <div className="flex items-center justify-between mb-0">
                 <FormLabel>OTP</FormLabel>
-                {otpSent && <Button className='text-xs m-0' variant={"ghost"} size={"sm"}>Resend OTP</Button>}
+                {otpSent && <Button className='text-xs m-0 text-black' variant={"ghost"} size={"sm"} onClick={resendOtp}>Resend OTP</Button>}
               </div>
             <FormControl>
             <InputOTP maxLength={6} {...field}>
@@ -112,7 +107,9 @@ const Otp = () => {
             <FormMessage/>
           </FormItem>
          )}/> }
-         <Button type = "submit" variant={"indi"}>{otpSent ? "send otp" : "register"}</Button>
+         <div className='w-full'>
+         <Button  type = "submit" variant={"indi"}>{otpSent ? "send otp" : "register"}</Button>
+         </div>
       </form>
     </Form>
     </div>   

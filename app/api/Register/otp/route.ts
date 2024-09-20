@@ -6,6 +6,11 @@ import { emailSchema } from '@/components/steppers/FormSchemas';
 import nodemailer, { Transporter } from 'nodemailer';
 import User from '@/models/UserDetials';
 
+interface addDataType {
+  email : string,
+  otp : string,
+  otpExpiration : Date;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,15 +48,19 @@ export async function POST(request: NextRequest) {
   }
 }  
 
-const dbwork = async(data:unknown)=>{
+const dbwork = async(data:addDataType)=>{
     try {
-      console.log('trying to connect..')
       await dbConnect(); // Ensure that the database is connected
-      const newUser = await User.create(data);
-      return newUser;
+
+      const userState = await User.findOneAndUpdate(
+        { email: data.email },  // Search by email
+        { $set: { email: data.email, otp: data.otp, otpExpiration: data.otpExpiration } },
+        { new: true, upsert: true } // 'upsert' creates a new doc if no match is found
+      );
+      return userState;
     } catch (error) {
       console.log("db connection error :",error)
-      // throw(error)
+      throw(error)
     }
 }
 

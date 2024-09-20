@@ -1,4 +1,6 @@
 
+ type entityType = 'Individual'| 'Corporate' | undefined
+
  export interface UserState {
     _id: string;
     fullName: string | null;
@@ -15,11 +17,11 @@
     bankAccountHolderName: string | null;
     bankAccountHolderNumber: string | null;
     bankAccountHolderIfsc: string | null;
-    cityId: string | null;
-    stateId: string | null;
+    city: string | null;
+    state: string | null;
     status: string | null;
     step: Number | null;
-    entity : string | null;
+    entity : entityType;
     createdAt: string | null;
     updatedAt: string | null;
     vechileMap: string[];

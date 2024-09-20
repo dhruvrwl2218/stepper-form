@@ -13,7 +13,7 @@ import { previousStep } from '@/redux/features/User/userSlice';
 
 
 const page = () => {
-  const userstep = (useSelector((state: RootState) => state.User.user?.step) ?? 1) as number
+  const userstep = (useSelector((state: RootState) => state.User.user?.step) ?? 5) as number
   const formSubmitRef = useRef<HTMLFormElement>(null);
   const dispatch: AppDispatch = useDispatch();
   
@@ -43,12 +43,12 @@ const page = () => {
     dispatch(previousStep());
   }
   return (
-    <div className='lg:mx-80 mt-8 shadow-lg p-12 mx-8'>
+    <div className='w-full min-w-[300px] mt-8 shadow-xl p-4'>
       <div><CurrStep currStep = {userstep}/></div>
-      <div>
+      <div className=''>
         {renderStage()}
       </div>
-      <div className='mt-8 flex justify-between'>
+      <div className='mt-8 flex justify-between gap-2'>
         <div>{userstep > 1 ? <Button variant={"indi"} size={"lg"} onClick={handlePrevious}>Previous</Button>:null}</div>
         <div>{userstep > 1 ? <Button variant={"indi"} size={"lg"} onClick={handleNext}>{userstep < 5 ?`Save & Proceed`:`Save & Submit`}</Button>:null}</div> 
       </div>

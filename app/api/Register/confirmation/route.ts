@@ -7,16 +7,14 @@ export async function POST(request : NextRequest){
 try {
     const body = await request.json();
     const cookies = request.cookies;
-   console.log(cookies)
+   
     const _id = cookies.get('UserId')?.value;
-    console.log(_id)
     const validate = otpSchema.parse(body.registerData);
-    console.log(validate)
     const {otp,email} = body;
     
      await dbConnect();
 
-    const user = await User.findById(_id).select('otp otpExpiration');
+    const user = await User.findById(_id);
 
     if(!user){
         console.log("error user not found")
@@ -25,8 +23,10 @@ try {
     if(user.otp !== otp && user.otpExpiration < Date.now && user.email === email){
         console.log('otp is not valid')
     }
-
-    const userState = await User.findByIdAndUpdate(_id, { otp: null , otpExpiration: null, step:2},{new:true}).exec();    
+    
+    let step = user.step ? user.step : 2
+    
+    const userState = await User.findByIdAndUpdate(_id, { otp: null , otpExpiration: null, step:step},{new:true}).exec();    
     return NextResponse.json(userState,{status:200});
 } catch (error) {
     console.log(error)

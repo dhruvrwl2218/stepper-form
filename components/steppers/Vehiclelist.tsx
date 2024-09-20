@@ -7,8 +7,6 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { z } from 'zod'; 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { VehicleMap } from '@/redux/features/User/userAsyncThunk';
-import { Heading1 } from 'lucide-react';
-
 
 const vehicleList: string[] = ['2wheeler','3wheeler','4wheeler','tractor','truck'];
 
@@ -27,14 +25,10 @@ interface FormData {
 const Vehiclelist = forwardRef<HTMLFormElement>((props,ref) => {
   const dispatch : AppDispatch = useDispatch();
   const {status,error,user} = useSelector((state: RootState) => state.User);
-
-  useEffect(()=>{
-
-  },[])
   
  const {register,setValue,watch,handleSubmit,formState: { errors }} = useForm<FormData>({
   resolver: zodResolver(schema), 
-  defaultValues : {vehiclesMap : []}
+  defaultValues : {vehiclesMap : user?.vechileMap || []}
  });
   
  const onSubmit:SubmitHandler<FormData> = async(data)=>{

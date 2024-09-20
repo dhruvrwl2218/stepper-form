@@ -1,5 +1,5 @@
 
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 import { SubmitHandler,Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from "@/redux/store";
@@ -16,18 +16,17 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button } from '../ui/button';
 import { kyc } from '@/redux/features/User/userAsyncThunk';
 
 const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
   const dispatch : AppDispatch = useDispatch();
   const {status,error,user} = useSelector((state: RootState) => state.User);
-  
+    
   const form = useForm<z.infer<typeof KycSchema>>({
     resolver: zodResolver(KycSchema),
     defaultValues :{
-      panNumber:"",
-      panName:"",
+      panNumber: user?.panNumber || '',
+      panName:user?.panName || '',
       panCard: undefined, 
       addressProofFront: undefined,
       addressProofBack: undefined,
@@ -35,7 +34,6 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
   })
 
   const onSubmit: SubmitHandler<z.infer<typeof KycSchema>>= async(values) =>{
-    console.log('values:',values)
     const formData = new FormData();
     Object.entries(values).map(([key,value])=>{
       if(value instanceof File){
@@ -44,20 +42,19 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
         formData.append(key,value.toString());
       }
     })
-    
     await dispatch(kyc(formData as any))
   }
   return (
     <div className='border-2 rounded-lg'>
-      <div className='text-3xl font-bold text-center w-full text-white bg-indigo-400 p-2'>KYC</div>
+      <div className='text-3xl font-bold text-center w-full text-neutral-100 bg-slate-800 p-2 '>KYC</div>
       {status === 'loading' ? <h1>Loading</h1>:
       <Form {...form}>
-          <form ref={ref} encType="multipart/form-data"  onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 gap-6 '>
+          <form ref={ref} encType="multipart/form-data"  onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 justify-start gap-12 text-slate-800'>
             <FormField
             control={form.control}
             name='panNumber'
             render={({field})=>(
-              <FormItem className='w-96'>
+              <FormItem className='w-1/3'>
                 <FormLabel>Pan No</FormLabel>
                 <FormControl>
                   <Input placeholder='xXXXXXXXXX' {...field}/>
@@ -69,7 +66,7 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
             control={form.control}
             name='panName'
             render={({field})=>(
-              <FormItem className='w-96'>
+              <FormItem className='w-1/3'>
                 <FormLabel>Pan Name</FormLabel>
                 <FormControl>
                   <Input placeholder='' {...field} />
@@ -77,31 +74,34 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
                 <FormMessage/>
               </FormItem>
             )}/>
+            <div className='w-1/4'>
             <Controller
             control={form.control}
             name="panCard"
             render={({ field }) => (
-              <FormItem className="w-72 ">
+              <FormItem className="w-full">
                 <FormLabel>Upload Pan Card</FormLabel>
                 <FormControl>
                   <input
                     type="file"
                     onChange={(e) => field.onChange(e.target.files?.[0])}
-                    className='border-2 rounded-md ' />
+                    className=' rounded-md border-2 p-1 w-full'/>
                 </FormControl>
                 <FormMessage/>
               </FormItem>
             )}
           />
-             <Controller
+            </div>
+            <div className='w-1/4'>
+            <Controller
             control={form.control}
             name="addressProofFront"
             render={({ field }) => (
-              <FormItem className="w-72 ">
-                <FormLabel>Address Proof (Front)</FormLabel>
+              <FormItem className="w-full">
+                <FormLabel className='text-nowrap'>Address Proof (Front)</FormLabel>
                 <FormControl>
                   <input
-                    className='border-2 rounded-md '
+                     className=' rounded-md border-2 p-1 w-full'
                     type="file"
                     onChange={(e) => field.onChange(e.target.files?.[0])}
                   />
@@ -110,15 +110,17 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
               </FormItem>
             )}
           />
+            </div>
+          <div className='w-1/4'>
           <Controller
             control={form.control}
             name="addressProofBack"
             render={({ field }) => (
-              <FormItem className="w-72 ">
+              <FormItem className="w-full">
                 <FormLabel>Address Proof(Back)</FormLabel>
-                <FormControl>
+                <FormControl className=''>
                   <input
-                    className='border-2 rounded-md '
+                     className=' rounded-md border-2 p-1 w-full'
                     type="file"
                     onChange={(e) => field.onChange(e.target.files?.[0])}
                   />
@@ -127,9 +129,11 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
               </FormItem>
             )}
           />
-          {/* <Button type="submit" variant="indi">Submit</Button> */}
+          </div>
+          {error && <p>{error}</p>}
           </form>
       </Form>
+
       }
     </div>
   )
@@ -137,33 +141,4 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
 
 export default Kyc
 
-// const KycSchema = z.object({
-//   panNo : z.string()
-//   .length(10, { message: "PAN number must be exactly 10 characters long" })
-//   .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, { message: "PAN number must follow the pattern AAAAA9999A" }),
-//   panName : z.string()
-//   .min(1, { message: "PAN name is required" })
-//   .max(100, { message: "PAN name must be at most 100 characters long" })
-//   .regex(/^[A-Za-z\s]+$/, { message: "PAN name must only contain letters and spaces" }),
-//   panCard: z
-//   .instanceof(File)
-//   .refine((file) => file.size <= 5 * 1024 * 1024, "File size should be less than 5MB")
-//   .refine(
-//     (file) => ["image/jpeg", "image/png", "application/pdf"].includes(file.type),
-//     "Only JPEG, PNG, or PDF files are allowed"
-//   ),
-// addressProofFront: z
-//   .instanceof(File)
-//   .refine((file) => file.size <= 5 * 1024 * 1024, "File size should be less than 5MB")
-//   .refine(
-//     (file) => ["image/jpeg", "image/png", "application/pdf"].includes(file.type),
-//     "Only JPEG, PNG, or PDF files are allowed"
-//   ),
-// addressProofBack: z
-//   .instanceof(File)
-//   .refine((file) => file.size <= 5 * 1024 * 1024, "File size should be less than 5MB")
-//   .refine(
-//     (file) => ["image/jpeg", "image/png", "application/pdf"].includes(file.type),
-//     "Only JPEG, PNG, or PDF files are allowed"
-//   )
-// })
+

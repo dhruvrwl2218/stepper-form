@@ -70,7 +70,7 @@ const CustomCheckbox = <T extends FieldValues>({ vehcile, setValue, watch }: Che
     }
   };
   return (
-    <div className={ isChecked ? `bg-indigo-400 p-2 flex flex-col items-center shadow-md rounded-md w-24 ` : `bg-neutral-50 p-2 flex flex-col items-center shadow-md rounded-md w-24`} role='button' onClick={toggleCheckbox} key={vehcile}>
+    <div className={ isChecked ? `bg-slate-700 p-2 flex flex-col items-center shadow-md rounded-md w-24 ` : `bg-neutral-50 p-2 flex flex-col items-center shadow-md rounded-md w-24 text-slate-800`} role='button' onClick={toggleCheckbox} key={vehcile}>
       <div className=''><img src={`/vehicleIcons/${vehcile}.png`} alt={`${vehcile}img`} /></div>
       <div>
         <input type="checkbox" value={vehcile} className='sr-only' />

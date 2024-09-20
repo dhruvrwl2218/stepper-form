@@ -13,11 +13,8 @@ export async function POST(request: NextRequest) {
         const {BankData} = await request.json();
         const cookies = request.cookies;
         const _id = cookies.get('UserId')?.value;
-        // console.log("aagya ji sb aa dekhlo",BankData,_id);
 
         const validate = Updatedschema.parse(BankData);
-
-        console.log('validate:', validate);
 
         dbConnect();
         const updatedStep2 = await User.findByIdAndUpdate(_id,{BankData},{new:true}).exec();
