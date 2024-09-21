@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { personalDetails } from "@/redux/features/User/userAsyncThunk"
+import LoadingDots from "../loader/LoadingDots";
 
 const baseSchema = PersonalDetailsSchema._def.schema; // Extract the base schema
 const Updatedschema = baseSchema.partial({ confirmPassword : true });//without confirm pass
@@ -70,7 +71,7 @@ const PersonalDetails = forwardRef<HTMLFormElement>((props,ref) => {
   return (
     <div className='border-2 rounded-lg'>
       <div className='text-3xl font-bold text-center w-full text-white bg-slate-800 p-2'>Personal Details</div>
-      {status === 'loading' ? <h1>loading</h1> :
+      {status === 'loading' ? <div className='flex justify-center mt-16'><LoadingDots/> </div>:
       <Form {...form}>
           <form  action="" ref = {ref} onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 '>
             <FormField

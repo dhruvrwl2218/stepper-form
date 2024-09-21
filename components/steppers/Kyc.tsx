@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { kyc } from '@/redux/features/User/userAsyncThunk';
+import LoadingDots from '../loader/LoadingDots';
 
 const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
   const dispatch : AppDispatch = useDispatch();
@@ -47,7 +48,7 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
   return (
     <div className='border-2 rounded-lg'>
       <div className='text-3xl font-bold text-center w-full text-neutral-100 bg-slate-800 p-2 '>KYC</div>
-      {status === 'loading' ? <h1>Loading</h1>:
+      {status === 'loading' ? <div className='flex justify-center mt-16'><LoadingDots/></div>:
       <Form {...form}>
           <form ref={ref} encType="multipart/form-data"  onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 justify-start gap-12 text-slate-800'>
             <FormField

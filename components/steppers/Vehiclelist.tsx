@@ -1,5 +1,5 @@
 import React, { forwardRef,useEffect,useState} from 'react'
-import { getVechileList } from '@/apiReq/userApi';
+// import { getVechileList } from '@/apiReq/userApi';
 import { SubmitHandler, useForm } from "react-hook-form";
 import CustomCheckbox from '../checkbox/CustomCheckbox';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { z } from 'zod'; 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { VehicleMap } from '@/redux/features/User/userAsyncThunk';
+import LoadingDots from '../loader/LoadingDots';
 
 const vehicleList: string[] = ['2wheeler','3wheeler','4wheeler','tractor','truck'];
 
@@ -37,7 +38,7 @@ const Vehiclelist = forwardRef<HTMLFormElement>((props,ref) => {
 
   return (
      <div>
-      {status === 'loading' ? <h1>Loading</h1> :
+      {status === 'loading' ? <div className='flex justify-center mt-16'><LoadingDots/> </div>:
       <form action="" ref={ref} onSubmit={handleSubmit(onSubmit)}>
         <div className='flex p-4 justify-evenly flex-wrap '>
           {}

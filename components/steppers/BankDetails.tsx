@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from '../ui/button';
 import { forwardRef } from "react";
 import { bankDetails } from "@/redux/features/User/userAsyncThunk";
+import LoadingDots from "../loader/LoadingDots";
 
 const BankDetails = forwardRef<HTMLFormElement>((props,ref) => {
   const dispatch : AppDispatch = useDispatch();
@@ -47,61 +48,62 @@ const BankDetails = forwardRef<HTMLFormElement>((props,ref) => {
 
   return (
     <div className='border-2 rounded-lg'>
-      {status === 'loading' && <h1>Loading</h1>}
       <div className='text-3xl font-bold text-center w-full text-white bg-slate-800 p-2'>Bank Details</div>
+      {status === 'loading' ?<div className='flex justify-center mt-16'><LoadingDots/> </div> :
       <Form {...form}>
-          <form action="" ref={ref} onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 gap-6 '>
-            <FormField
-            control={form.control}
-            name='bankAccountHolderName'
-            render={({field})=>(
-              <FormItem className='w-96'>
-                <FormLabel>AccountHolderName</FormLabel>
-                <FormControl>
-                  <Input placeholder='Account holder name' {...field}/>
-                </FormControl>
-                <FormMessage/>
-              </FormItem>
-            )}/>
-           <FormField
-           control={form.control}
-           name='bankAccountHolderIfsc'
-           render={({field})=>(
-             <FormItem className='w-96'>
-               <FormLabel>Bank IFSC No.</FormLabel>
-               <FormControl>
-                 <Input placeholder='BSBIN0001234' {...field}/>
-               </FormControl>
-               <FormMessage/>
-             </FormItem>
-           )}/>
-           <FormField
-           control={form.control}
-           name='bankAccountHolderNumber'
-           render={({field})=>(
-             <FormItem className='w-96'>
-               <FormLabel>Bank Account No</FormLabel>
-               <FormControl>
-                 <Input placeholder='123456789012' {...field}/>
-               </FormControl>
-               <FormMessage/>
-             </FormItem>
-           )}/>
-           <FormField
-           control={form.control}
-           name='ConfirmBankAccNo'
-           render={({field})=>(
-             <FormItem className='w-96'>
-               <FormLabel>Confirm Bank Acc No</FormLabel>
-               <FormControl>
-                 <Input placeholder='123456789012' {...field}/>
-               </FormControl>
-               <FormMessage/>
-             </FormItem>
-           )}/>
-             {error && <p>Error while Saving Bank Details</p>}
-            </form>
-      </Form>
+      <form action="" ref={ref} onSubmit={form.handleSubmit(onSubmit)} className='flex flex-wrap p-12 gap-6 '>
+        <FormField
+        control={form.control}
+        name='bankAccountHolderName'
+        render={({field})=>(
+          <FormItem className='w-96'>
+            <FormLabel>AccountHolderName</FormLabel>
+            <FormControl>
+              <Input placeholder='Account holder name' {...field}/>
+            </FormControl>
+            <FormMessage/>
+          </FormItem>
+        )}/>
+       <FormField
+       control={form.control}
+       name='bankAccountHolderIfsc'
+       render={({field})=>(
+         <FormItem className='w-96'>
+           <FormLabel>Bank IFSC No.</FormLabel>
+           <FormControl>
+             <Input placeholder='BSBIN0001234' {...field}/>
+           </FormControl>
+           <FormMessage/>
+         </FormItem>
+       )}/>
+       <FormField
+       control={form.control}
+       name='bankAccountHolderNumber'
+       render={({field})=>(
+         <FormItem className='w-96'>
+           <FormLabel>Bank Account No</FormLabel>
+           <FormControl>
+             <Input placeholder='123456789012' {...field}/>
+           </FormControl>
+           <FormMessage/>
+         </FormItem>
+       )}/>
+       <FormField
+       control={form.control}
+       name='ConfirmBankAccNo'
+       render={({field})=>(
+         <FormItem className='w-96'>
+           <FormLabel>Confirm Bank Acc No</FormLabel>
+           <FormControl>
+             <Input placeholder='123456789012' {...field}/>
+           </FormControl>
+           <FormMessage/>
+         </FormItem>
+       )}/>
+         {error && <p>Error while Saving Bank Details</p>}
+        </form>
+  </Form>}
+      
     </div>
   )
 }

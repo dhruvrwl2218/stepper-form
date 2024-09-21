@@ -15,6 +15,7 @@ interface addDataType {
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
+    console.log(data)
     const validation = emailSchema.parse(data);
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
     return response;
     }
   catch (error) {
+    console.log(error)
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify({ success: false, errors: error.errors }), { status: 400 });
     }
