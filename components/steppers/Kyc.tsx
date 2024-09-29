@@ -45,6 +45,7 @@ const Kyc = forwardRef<HTMLFormElement>((props,ref) => {
     })
     await dispatch(kyc(formData as any))
   }
+  
   return (
     <div className='border-2 rounded-lg'>
       <div className='text-3xl font-bold text-center w-full text-neutral-100 bg-slate-800 p-2 '>KYC</div>

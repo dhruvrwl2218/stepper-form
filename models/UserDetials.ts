@@ -22,9 +22,9 @@ const UserDetails = new Schema({
     password : {
       type : String
     },
-    mobile2: {
+    mobileNo: {
       type: String,
-      // required: [true, 'Mobile number is required'],
+      required: [true, 'Mobile number is required'],
       match: [/^\d{10}$/, "Mobile number must be 10 digits"],
     },
     entity: {

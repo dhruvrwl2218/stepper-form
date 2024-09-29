@@ -42,13 +42,13 @@ export async function POST(request : NextRequest) {
     }
 
     const public_id = await filesPublicId(FileUpload)
-    console.log('final ids:',public_id)
+    // console.log('final ids:',public_id)
     
     const userState = await User.findByIdAndUpdate({_id},{...public_id,step:4,panNumber,panName},{new:true}).exec();;
-    console.log(userState)
+    // console.log(userState)
     return NextResponse.json(userState,{status : 200})
   } catch (error) {
-    console.log(error)
+    // console.log(error)
 
     return NextResponse.json({status:500})
   }

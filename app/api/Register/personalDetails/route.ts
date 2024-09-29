@@ -12,13 +12,13 @@ export async function POST(request : NextRequest){
         const {PersonalData} = await request.json();
         const _id = cookies.get('UserId')?.value;
 
-        // console.log("body recieved :",PersonalData)
+        console.log("body recieved :",PersonalData)
         const validate = Updatedschema.parse(PersonalData);
         console.log(validate);
 
         dbConnect();
-        const updatedStep2 = await User.findByIdAndUpdate(_id,{PersonalData,step : 5},{new:true}).exec();
-        console.log(updatedStep2)
+        const updatedStep2 = await User.findByIdAndUpdate(_id,{...PersonalData,step : 5},{new:true}).exec();
+        console.log('responseData',updatedStep2)
         return NextResponse.json(updatedStep2,{status:200});
 
     } catch (error) {

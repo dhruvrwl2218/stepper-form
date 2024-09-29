@@ -68,7 +68,7 @@ export const PersonalDetailsSchema = z.object({
       .string()
       .email({ message: "Invalid email address" }),
   
-      mobileNo2: z
+    mobileNo: z
       .string()
       .regex(/^\d{10}$/, { message: "Invalid mobile number" })
       .optional(),
@@ -93,7 +93,7 @@ export const PersonalDetailsSchema = z.object({
       .max(100, { message: "Address 2 can't exceed 100 characters" })
       .optional(),
   
-   pincode: z
+   pinCode: z
       .string()
       .regex(/^\d{6}$/, { message: "Invalid pincode" }),
   

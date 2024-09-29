@@ -52,10 +52,10 @@ const PersonalDetails = forwardRef<HTMLFormElement>((props,ref) => {
       firstName : user?.firstName || '',
       lastName : user?.lastName || '',
       email : user?.email || '',
-      mobileNo2 : user?.mobile2 || '',
+      mobileNo : user?.mobileNo || '',
       address1 : user?.address1 || '',
       address2 : user?.address2 || '',
-      pincode : user?.pinCode || '',
+      pinCode : user?.pinCode || '',
       state : user?.state || '',
       city : user?.city || '',
     }
@@ -143,7 +143,7 @@ const PersonalDetails = forwardRef<HTMLFormElement>((props,ref) => {
             )}/>
              <FormField
             control={form.control}
-            name='mobileNo2'
+            name='mobileNo'
             render={({field})=>(
               <FormItem className='w-64'>
                 <FormLabel>Secondary Mobile No</FormLabel>
@@ -205,7 +205,7 @@ const PersonalDetails = forwardRef<HTMLFormElement>((props,ref) => {
             )}/>
             <FormField
             control={form.control}
-            name='pincode'
+            name='pinCode'
             render={({field})=>(
               <FormItem className='w-48'>
                 <FormLabel>Pincode</FormLabel>

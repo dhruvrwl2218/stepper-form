@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useRef } from "react";
 import BankDetails from "@/components/steppers/BankDetails";
 import Kyc from "@/components/steppers/Kyc";

@@ -6,8 +6,7 @@
     fullName: string | null;
     firstName: string | null;
     lastName: string | null;
-    mobile: string | null;
-    mobile2: string | null;
+    mobileNo: string | null;
     email: string | null;
     address1: string | null;
     address2: string | null;
