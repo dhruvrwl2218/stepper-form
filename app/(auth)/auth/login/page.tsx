@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-const signSchema = z.object({
+export const signSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z
   .string()
@@ -44,7 +44,7 @@ const page = () => {
     <div className="mt-10  item-center flex justify-center ">
       <Card className="w-96 p-2">
         <CardHeader className="flex flex-col items-center">
-          <CardTitle>vechile Rent</CardTitle>
+          <CardTitle>Ghoomiee-Ghoomiee</CardTitle>
           <CardDescription className="text-md">Sign In</CardDescription>
         </CardHeader>
         <CardContent>
